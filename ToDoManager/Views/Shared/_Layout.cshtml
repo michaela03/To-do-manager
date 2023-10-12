@@ -1,0 +1,59 @@
+﻿@using Data.Entities
+@using Microsoft.AspNetCore.Http
+@using ToDoManager.Models.Home
+@using ToDoManager.Utils
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    LoggedUser loggedUser = HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser") == null
+        ? null
+        : HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser");
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <h1 class="left">ToDo Manager</h1>
+        <div class="right">Hello, @(loggedUser == null ? "Annonymous" : loggedUser.Username)</div>
+    </div>
+    <div class="menu">
+        <ul>
+            <li>
+                <a href="/Home/Index">Home</a>
+            </li>
+            @if (loggedUser != null && loggedUser.IsAdmin)
+            {
+                <li>
+                    <a href="/User/Index">Users</a>
+                </li>
+
+            }
+            <li>
+                <a href="/Project/Index">Projects</a>
+            </li>
+            <li>
+                <a href="/Task/MyTasks">My tasks</a>
+            </li>
+            <li>
+                @if (loggedUser == null)
+                {
+                    <a href="/Home/Login">Login</a>
+                }
+                else
+                {
+                    <a href="/Home/Logout">Logout</a>
+                }
+            </li>
+        </ul>
+    </div>
+    <div class="body">
+        @RenderBody()
+    </div>
+</body>
+</html>

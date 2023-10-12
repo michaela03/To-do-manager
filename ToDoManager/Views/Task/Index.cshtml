@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Http
+@using ToDoManager.Models.Home
+@using ToDoManager.Utils
+@model ToDoManager.Models.Tasks.IndexVM
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    LoggedUser loggedUser = HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser") == null
+        ? null
+        : HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser");
+}
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend class="bold">@Model.Project.Title</legend>
+    <p>@Model.Project.Description</p>
+</fieldset>
+
+@if (loggedUser.Id == Model.Project.LeadId)
+{
+    <a href="/Task/Create?id=@Model.Project.Id">New</a>
+}
+<fieldset>
+    <legend>Tasks</legend>
+
+    <div class="grid">
+        <div class="row">
+            <div class="col-3 bold">Title</div>
+            <div class="col-3 bold">Description</div>
+            <div class="col-3 bold"></div>
+        </div>
+        @foreach (var item in Model.Items)
+        {
+            <div class="row">
+                <div class="col-3">@item.Title</div>
+                <div class="col-3">@item.Description</div>
+                <div class="col-3">
+                    <a asp-action="Index" asp-controller="WorkLog" asp-route-taskId="@item.Id">details</a>
+                    @if (loggedUser.Id == Model.Project.LeadId)
+                    {
+                        <a asp-action="Edit" asp-controller="Task" asp-route-id="@item.Id">edit</a>
+                        <a asp-action="Delete" asp-controller="Task" asp-route-id="@item.Id">delete</a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @for (int i = 0; i < Model.PagesCount; i++)
+    {
+        <a href="/Task/Index?projectId=@Model.ProjectId&Page=@(i+1)&ItemsPerPage=@(Model.ItemsPerPage)">@(i + 1)</a>
+    }
+
+    <script>
+        function ddlItemsPerPage_Change() {
+
+            let ddlItemsPerPage = document.getElementById("ddlItemsPerPage");
+            let selectedIndex = ddlItemsPerPage.selectedIndex;
+            let itemsPerPage = ddlItemsPerPage.options[selectedIndex].value;
+
+            document.location.href = "/Task/Index?projectId=@Model.ProjectId&ItemsPerPage=" + itemsPerPage;
+        }
+    </script>
+
+    <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_Change()">
+        <option selected="@(Model.ItemsPerPage == 2)">2</option>
+        <option selected="@(Model.ItemsPerPage == 5)">5</option>
+        <option selected="@(Model.ItemsPerPage == 10)">10</option>
+    </select>
+</fieldset>
+

@@ -1,0 +1,54 @@
+﻿@model ToDoManager.Models.Users.IndexVM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a href="/User/Create">New</a>
+<fieldset>
+    <legend>Users</legend>
+
+    <div class="grid">
+        <div class="row">
+            <div class="col-1 bold">Username</div>
+            <div class="col-1 bold">First Name</div>
+            <div class="col-1 bold">Last Name</div>
+            <div class="col-1 bold"></div>
+        </div>
+        @foreach (var item in Model.Items)
+        {
+            <div class="row">
+                <div class="col-1">@item.Username</div>
+                <div class="col-1">@item.FirstName</div>
+                <div class="col-1">@item.LastName</div>
+                <div class="col-1">
+                    <a asp-action="Edit" asp-controller="User" asp-route-id="@item.Id">edit</a>
+                    <a asp-action="Delete" asp-controller="User" asp-route-id="@item.Id">delete</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    @for (int i = 0; i < Model.PagesCount; i++)
+    {
+        <a href="/User/Index?Page=@(i+1)&ItemsPerPage=@(Model.ItemsPerPage)">@(i + 1)</a>
+    }
+
+    <script>
+        function ddlItemsPerPage_Change() {
+
+            let ddlItemsPerPage = document.getElementById("ddlItemsPerPage");
+            let selectedIndex = ddlItemsPerPage.selectedIndex;
+            let itemsPerPage = ddlItemsPerPage.options[selectedIndex].value;
+
+            document.location.href = "/User/Index?ItemsPerPage=" + itemsPerPage;
+        }
+    </script>
+
+    <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_Change()">
+        <option selected="@(Model.ItemsPerPage == 2)">2</option>
+        <option selected="@(Model.ItemsPerPage == 5)">5</option>
+        <option selected="@(Model.ItemsPerPage == 10)">10</option>
+    </select>
+
+</fieldset>

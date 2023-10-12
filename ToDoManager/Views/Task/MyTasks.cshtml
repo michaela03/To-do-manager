@@ -1,0 +1,48 @@
+﻿@model ToDoManager.Models.Tasks.MyTasksVM
+@{
+    ViewData["Title"] = "MyTasks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend>My Tasks</legend>
+    <div class="grid">
+        <div class="row">
+            <div class="col-3 bold">Project Title</div>
+            <div class="col-3 bold">Task Title</div>
+            <div class="col-3 bold"></div>
+        </div>
+        @foreach (var item in Model.Items)
+        {
+            <div class="row">
+                <div class="col-3">@item.ProjectTitle</div>
+                <div class="col-3">@item.TaskTitle</div>
+                <div class="col-3">
+                    <a asp-action="Index" asp-controller="WorkLog" asp-route-taskId="@item.TaskId">details</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    @for (int i = 0; i < Model.PagesCount; i++)
+    {
+        <a href="/Task/MyTasks?Page=@(i+1)&ItemsPerPage=@(Model.ItemsPerPage)">@(i + 1)</a>
+    }
+
+    <script>
+        function ddlItemsPerPage_Change() {
+
+            let ddlItemsPerPage = document.getElementById("ddlItemsPerPage");
+            let selectedIndex = ddlItemsPerPage.selectedIndex;
+            let itemsPerPage = ddlItemsPerPage.options[selectedIndex].value;
+
+            document.location.href = "/Task/MyTasks?Page=@Model.Page&ItemsPerPage=" + itemsPerPage;
+        }
+    </script>
+
+    <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_Change()">
+        <option selected="@(Model.ItemsPerPage == 2)">2</option>
+        <option selected="@(Model.ItemsPerPage == 5)">5</option>
+        <option selected="@(Model.ItemsPerPage == 10)">10</option>
+    </select>
+</fieldset>

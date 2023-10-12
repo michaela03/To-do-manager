@@ -1,0 +1,44 @@
+﻿@model ToDoManager.Models.WorkLogs.CreateVM
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend>Create Work Log</legend>
+
+    <form asp-action="Create" asp-controller="WorkLog" method="post">
+        @Html.HiddenFor(m => m.TaskId)
+        @Html.HiddenFor(m => m.UserId)
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Hours)
+                </div>
+                <div class="col-2">
+                    @Html.EditorFor(m => m.Hours)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Hours)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Date)
+                </div>
+                <div class="col-2">
+                    @Html.EditorFor(m => m.Date)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Date)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <input class="right" type="submit" value="Save" />
+                </div>
+            </div>
+        </div>
+    </form>
+</fieldset>
+

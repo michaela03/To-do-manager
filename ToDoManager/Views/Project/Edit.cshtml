@@ -1,0 +1,44 @@
+﻿@model ToDoManager.Models.Projects.EditVM
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend>Edit Project</legend>
+
+    <form asp-action="Edit" asp-controller="Project" method="post">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.LeadId)
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Title)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Description)
+                </div>
+                <div class="col-2">
+                    @Html.TextAreaFor(m => m.Description)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <input class="right" type="submit" value="Save" />
+                    </div>
+                </div>
+            </div>
+    </form>
+</fieldset>
+
+

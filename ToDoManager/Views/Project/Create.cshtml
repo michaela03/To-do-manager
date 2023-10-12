@@ -1,0 +1,43 @@
+﻿@model ToDoManager.Models.Projects.CreateVM
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend>Create Project</legend>
+
+    <form asp-action="Create" asp-controller="Project" method="post">
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Title)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Description)
+                </div>
+                <div class="col-2">
+                    @Html.TextAreaFor(m => m.Description)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <input class="right" type="submit" value="Save" />
+                </div>
+            </div>
+        </div>
+    </form>
+</fieldset>
+
+

@@ -1,0 +1,103 @@
+﻿@using Microsoft.AspNetCore.Http
+@using ToDoManager.Models.Home
+@using ToDoManager.Utils
+@model ToDoManager.Models.WorkLogs.IndexVM
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    LoggedUser loggedUser = HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser") == null
+        ? null
+        : HttpContextAccessor.HttpContext.Session.GetObjectFromJson<LoggedUser>("loggedUser");
+}
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<fieldset>
+    <legend>@Model.Task.Title</legend>
+    <form asp-action="TaskEdit" asp-controller="WorkLog" method="post">
+        @Html.HiddenFor(m => m.Task.Id)
+        @Html.HiddenFor(m => m.Task.ProjectId)
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Task.Title)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Task.Title, new { @disabled = "true" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Task.Description)
+                </div>
+                <div class="col-2">
+                    @Html.TextAreaFor(m => m.Task.Description, new { @disabled = "true" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Task.AssigneeId)
+                </div>
+                <div class="col-2">
+                    @Html.DropDownListFor(m => m.Task.AssigneeId, Model.UserPairs)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <input class="right" type="submit" value="Save" />
+                </div>
+            </div>
+        </div>
+    </form>
+</fieldset>
+
+@if (loggedUser.Id == Model.Task.AssigneeId)
+{
+    <a href="/WorkLog/Create?id=@Model.Task.Id">New</a>
+}
+<fieldset>
+    <legend>Work Logs</legend>
+
+    <div class="grid">
+        <div class="row">
+            <div class="col-3 bold">Hours</div>
+            <div class="col-3 bold">Date</div>
+            <div class="col-3 bold"></div>
+        </div>
+        @foreach (var item in Model.Items)
+        {
+            <div class="row">
+                <div class="col-3">@item.Hours</div>
+                <div class="col-3">@item.CreateDate</div>
+                <div class="col-3">
+                    <a asp-action="Edit" asp-controller="WorkLog" asp-route-id="@item.Id">edit</a>
+                    <a asp-action="Delete" asp-controller="WorkLog" asp-route-id="@item.Id">delete</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    @for (int i = 0; i < Model.PagesCount; i++)
+    {
+        <a href="/WorkLog/Index?taskId=@Model.TaskId&Page=@(i+1)&ItemsPerPage=@(Model.ItemsPerPage)">@(i + 1)</a>
+    }
+
+    <script>
+        function ddlItemsPerPage_Change() {
+
+            let ddlItemsPerPage = document.getElementById("ddlItemsPerPage");
+            let selectedIndex = ddlItemsPerPage.selectedIndex;
+            let itemsPerPage = ddlItemsPerPage.options[selectedIndex].value;
+
+            document.location.href = "/WorkLog/Index?taskId=@Model.TaskId&ItemsPerPage=" + itemsPerPage;
+        }
+    </script>
+
+    <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_Change()">
+        <option selected="@(Model.ItemsPerPage == 2)">2</option>
+        <option selected="@(Model.ItemsPerPage == 5)">5</option>
+        <option selected="@(Model.ItemsPerPage == 10)">10</option>
+    </select>
+</fieldset>
+
